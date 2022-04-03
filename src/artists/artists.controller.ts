@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Artist, ArtistDocument } from '../schemas/artist.schema';
 import { Model } from 'mongoose';
@@ -31,6 +31,11 @@ export class ArtistsController {
 
   @Get(':id')
   getOne(@Param('id') id: string) {
-    return { message: `Artist id: ${id}` };
+    return this.artistsModel.findOne({ _id: id });
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.artistsModel.findByIdAndRemove({ _id: id });
   }
 }
