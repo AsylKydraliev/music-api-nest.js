@@ -39,4 +39,6 @@ export class AlbumsController {
   remove(@Param('id') id: string) {
     return this.albumModel.findByIdAndRemove({ _id: id });
   }
+
+  //getByArtist_id
 }
