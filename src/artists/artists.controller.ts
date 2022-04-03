@@ -1,7 +1,8 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Artist, ArtistDocument } from '../schemas/artist.schema';
 import { Model } from 'mongoose';
+import { CreateArtistDto } from './create-artist.dto';
 
 @Controller('artists')
 export class ArtistsController {
@@ -15,8 +16,17 @@ export class ArtistsController {
   }
 
   @Post()
-  create() {
-    return { message: 'Create artist' };
+  async create(@Body() artistDto: CreateArtistDto) {
+    const artist = new this.artistsModel({
+      title: artistDto.title,
+      photo: artistDto.photo,
+      info: artistDto.info,
+      isPublished: artistDto.isPublished,
+    });
+
+    await artist.save();
+
+    return artist;
   }
 
   @Get(':id')
