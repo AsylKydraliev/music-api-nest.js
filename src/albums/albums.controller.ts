@@ -1,8 +1,17 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Album, AlbumDocument } from '../schemas/album.schema';
 import { Model } from 'mongoose';
 import { CreateAlbumDto } from './create-album.dto';
+import { Request } from 'express';
 
 @Controller('albums')
 export class AlbumsController {
@@ -11,7 +20,15 @@ export class AlbumsController {
   ) {}
 
   @Get()
-  getAll() {
+  getAll(@Req() req: Request) {
+    const query = {
+      artist_id: null,
+    };
+    if (req.query.artist_id) {
+      query.artist_id = { _id: req.query.artist_id };
+
+      return this.albumModel.find(query).populate('artist_id', 'title');
+    }
     return this.albumModel.find();
   }
 
@@ -39,6 +56,4 @@ export class AlbumsController {
   remove(@Param('id') id: string) {
     return this.albumModel.findByIdAndRemove({ _id: id });
   }
-
-  //getByArtist_id
 }
